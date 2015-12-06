@@ -1,14 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     android:paddingLeft="64dp"
-    android:paddingRight="64dp"
-    tools:context="team.jcandfriends.namnam.LoginActivity">
+    android:paddingRight="64dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:text="Log In"
+            android:text="Register"
             android:textColor="@color/white"
             android:textSize="36sp"
             android:textStyle="bold" />
@@ -31,13 +27,13 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp">
 
             <EditText
-                android:id="@+id/etIdentifier"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username or Email"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
@@ -48,12 +44,22 @@
             android:layout_marginBottom="16dp">
 
             <EditText
-                android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:hint="Password"
-                android:inputType="textPassword"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirm Password"
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
@@ -61,21 +67,8 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
             android:background="@drawable/login_btn_bg"
-            android:onClick="onLogin"
-            android:text="Log in" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" />
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/google_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="Register" />
 
     </LinearLayout>
 

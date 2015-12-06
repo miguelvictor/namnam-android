@@ -1,17 +1,19 @@
 package team.jcandfriends.namnam;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
@@ -24,15 +26,27 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+import team.jcandfriends.namnam.managers.AuthenticationManager;
+import team.jcandfriends.namnam.models.auth.Token;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private static final int RC_GOOGLE_SIGN_IN = 9001;
+
+    private EditText etIdentifier;
+    private EditText etPassword;
+
+    private AuthenticationManager mAuthManager;
 
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
@@ -41,6 +55,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        etIdentifier = (EditText) findViewById(R.id.etIdentifier);
+        etPassword = (EditText) findViewById(R.id.etPassword);
+
+        mAuthManager = AuthenticationManager.getInstance(this);
 
         initializeFacebookLogin();
         initializeGoogleLogin();
@@ -58,13 +77,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onSuccess(LoginResult loginResult) {
                 AccessToken accessToken = loginResult.getAccessToken();
-                Log.i(TAG, "User ID: " + accessToken.getUserId());
-                Log.i(TAG, "Access Token: " + accessToken.getToken());
 
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.i(TAG, response.toString());
+                        FacebookRequestError error = response.getError();
+                        if (error == null) {
+                            try {
+                                Log.i(TAG, "Facebook Account Details");
+                                Log.i(TAG, "ID : " + object.getString("id"));
+                                Log.i(TAG, "Name : " + object.getString("name"));
+                                Log.i(TAG, "Email : " + object.getString("email"));
+                            } catch (JSONException e) {
+                                // can be ignored sometimes
+                                Log.e(TAG, "Error parsing JSON response from Graph Request : " + e.getMessage(), e);
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Something unexpected has occurred. Sorry!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -81,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             @Override
             public void onError(FacebookException error) {
-                Log.e(TAG, "Login attempt failed: " + error.getMessage(), error);
+                Toast.makeText(LoginActivity.this, "Something unexpected has occurred. Sorry!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -105,21 +135,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        // mLoginButton.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_GOOGLE_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
+
+                Log.i(TAG, "GOOGLE ACCOUNT DETAILS");
+                Log.i(TAG, "ID: " + account.getId());
                 Log.i(TAG, "Name: " + account.getDisplayName());
                 Log.i(TAG, "Email: " + account.getEmail());
+
+                mAuthManager.loginToGoogle();
+            } else {
+                Toast.makeText(this, "Something unexpected has occurred. Sorry!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "Something unexpected has occurred. Sorry!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -137,22 +173,28 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void onLogin(View view) {
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage("Logging you in...")
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-
-                    }
-                })
+                .setCancelable(false)
                 .create();
 
+        String identifier = etIdentifier.getText().toString();
+        String password = etPassword.getText().toString();
 
+        mAuthManager.login(identifier, password, new Callback<Token>() {
+            @Override
+            public void onResponse(Response<Token> response, Retrofit retrofit) {
+                // do something with response
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                // inform user
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

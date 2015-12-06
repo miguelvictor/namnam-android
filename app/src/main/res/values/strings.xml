@@ -21,4 +21,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+    <!-- NamNam Backend OAuth Credentials -->
+    <string name="namnam_client_id">Hp1cVXAnVfpLcjGYixrQjZb8MDWU48FcTde9VbqM</string>
+    <string name="namnam_client_secret">5mx81RF9r7dFZR8ZGRa7livuX8TSKKS4qCV7nYs6EorwemIX6ShorT1DwaBNMu6vBJk4bAkkZAaTZXV1R4vLQ0eDYRg06y1Fu2SmL7nvnCD4IY2uLMToeSMzjFccyU71</string>
 </resources>

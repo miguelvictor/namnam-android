@@ -21,7 +21,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import team.jcandfriends.namnam.models.Ingredient;
 
-public final class IngredientManager extends BaseManager<Ingredient> implements ExclusionStrategy {
+public final class IngredientManager extends BaseModelManager<Ingredient> implements ExclusionStrategy {
 
     private static final String TAG = IngredientManager.class.getSimpleName();
 

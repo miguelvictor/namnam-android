@@ -16,7 +16,7 @@ import retrofit.Callback;
  *
  * @param <T>
  */
-public abstract class BaseManager<T extends RealmObject> {
+public abstract class BaseModelManager<T extends RealmObject> {
 
     public static final String BASE_URL = "http://cookstogo.herokuapp.com/api-v2/";
 

@@ -18,7 +18,7 @@ import retrofit.Retrofit;
 import retrofit.http.GET;
 import team.jcandfriends.namnam.models.Recipe;
 
-public final class RecipeManager extends BaseManager<Recipe> implements ExclusionStrategy {
+public final class RecipeManager extends BaseModelManager<Recipe> implements ExclusionStrategy {
 
     private static final String TAG = RecipeManager.class.getSimpleName();
 

@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         initializeLoginText((TextView) findViewById(R.id.tv_login_text));
     }
 
-    public void initializeLoginText(TextView textView) {
+    private void initializeLoginText(TextView textView) {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(0xFF6151F9);
 
         ClickableSpan span = new ClickableSpan() {
@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(ss);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setHighlightColor(Color.TRANSPARENT);
+    }
+
+    public void onRegister (View view) {
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 
 }
